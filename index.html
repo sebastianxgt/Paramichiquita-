@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuestro Universo 3D ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #15021a 0%, #05000a 60%, #000000 100%);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            perspective: 800px; 
+        }
+        .welcome-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #08010d;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: opacity 0.8s ease, pointer-events 0.8s;
+        }
+        .welcome-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .welcome-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #ea2aea;
+            text-align: center;
+            padding: 0 20px;
+            font-weight: 600;
+        }
+        .start-btn {
+            background: linear-gradient(45deg, #ea2aea, #ff65a3);
+            border: none;
+            padding: 18px 35px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 35px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(234, 42, 234, 0.6);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #space3d {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        .nebula {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) translateZ(-100px);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(234, 42, 234, 0.2) 0%, rgba(30, 144, 255, 0.08) 50%, transparent 70%);
+            filter: blur(60px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .star3d {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            transform-style: preserve-3d;
+        }
+
+        .center-heart {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) translateZ(50px);
+            z-index: 10;
+            cursor: pointer;
+            font-size: 70px;
+            filter: drop-shadow(0 0 25px rgba(255, 20, 147, 0.9));
+            animation: latido 1.2s infinite ease-in-out;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .cosmic-text-3d {
+            position: absolute;
+            left: 50%; top: 50%;
+            color: #ffffff;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color);
+            pointer-events: none;
+            white-space: nowrap;
+            will-change: transform, opacity;
+            animation: float3D 12s linear infinite;
+        }
+
+        .trail-particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 14px;
+            z-index: 6;
+            animation: fadeOutParticle 1s forwards ease-out;
+        }
+
+        .letter-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(5, 2, 9, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+        .letter-overlay.active { opacity: 1; pointer-events: auto; }
+        .letter-card {
+            background: linear-gradient(135deg, #25092a 0%, #0a020d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(234, 42, 234, 0.2);
+            padding: 35px 25px;
+            border-radius: 30px;
+            width: 88%; max-width: 380px;
+            text-align: center;
+            color: #fff;
+            transform: translateY(30px) scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+        .letter-overlay.active .letter-card { transform: translateY(0) scale(1); }
+        .letter-card h2 { color: #ff65a3; margin-bottom: 15px; font-size: 26px; }
+        .letter-card p { font-size: 16px; line-height: 1.7; color: #f3e8f4; margin-bottom: 25px; }
+        .close-btn {
+            background: linear-gradient(45deg, #ea2aea, #ff65a3);
+            border: none; padding: 12px 30px; color: white;
+            font-weight: bold; border-radius: 25px; cursor: pointer;
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: translate(-50%, -50%) translateZ(50px) scale(1); }
+            50% { transform: translate(-50%, -50%) translateZ(70px) scale(1.1); }
+        }
+        @keyframes float3D {
+            0% {
+                transform: translate3d(var(--sx), var(--sy), -600px) scale(0.2);
+                opacity: 0;
+            }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% {
+                transform: translate3d(var(--ex), var(--ey), 200px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        @keyframes fadeOutParticle {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--mx), var(--my)) scale(0.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <h1 class="welcome-title">Bienvenido/a a Nuestro Universo ✨</h1>
+        <button class="start-btn" id="startBtn">❤️💘Para ti mi niña hermosa 💕💞</button>
+    </div>
+
+    <div id="space3d">
+        <div class="nebula"></div>
+        <div class="center-heart" id="heartBtn">❤️</div>
+        <div id="starsGroup" style="transform-style: preserve-3d;"></div>
+        <div id="wordsGroup" style="transform-style: preserve-3d;"></div>
+    </div>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="The Winner Is - DeVotchKa (320k).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="letter-overlay" id="letterModal">
+        <div class="letter-card">
+            <h2>Para Mi Persona Favorita ✨</h2>
+            <p>💞Mi niña, eres lo más bonito que tengo en esta vida💕. 💖Eres mi mundo 🌍 y la única estrella que brilla en mi corazón ✨. 🩵Eres lo más importante para mí💝; por eso, cuando estés triste, 💗recuerda que hay alguien que te ama💘 y con quien cuentas para lo que tú quieras🤎.</p>
+            <button class="close-btn" id="closeBtn">Cerrar Universo</button>
+        </div>
+    </div>
+
+    <script>
+        const palabrasAmor = [
+            "✨ Siempre contigo", "❤️ Te amo", "☀️ Mi sol", "🌷 Mi chiquita", "🌹 Amor eterno", 
+            "🌍 Mi mundo entero", "🥰 Mi vida", "💖 Brillas en mi corazon", "🎁 Mi sueño", "🔥 Siempre tú", 
+            "🌈 Mi niña", "🌌 Eres mi realidad", "☁️ Mi cielo", "🌙 Mi sueño", "💎 Eres todo", 
+            "⭐ Estrella de mi vida ", "🦋 Mujer de mi vida", "💫 Mi destino", "🧸 Mi paz", "🔒 Mi lugar seguro",
+            "💕 Mi felicidad", "💞 Mi luna en esta noche","💘 Mi cielo","❤️ La niña de mis ojos"
+        ];
+        const coloresGlow = ['#ff477e', '#ff85a2', '#ea2aea', '#3a86ff', '#00f5d4'];
+        
+        const space3d = document.getElementById('space3d');
+        const starsGroup = document.getElementById('starsGroup');
+        const wordsGroup = document.getElementById('wordsGroup');
+        const heartBtn = document.getElementById('heartBtn');
+        const letterModal = document.getElementById('letterModal');
+        const closeBtn = document.getElementById('closeBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const welcomeOverlay = document.getElementById('welcomeOverlay');
+        const startBtn = document.getElementById('startBtn');
+
+        // Control de rotación interactiva con Mouse o Dedo
+        let targetX = 0, targetY = 0;
+        let currentX = 0, currentY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            // Calcula la inclinación según la posición del cursor
+            targetX = (e.clientX / window.innerWidth - 0.5) * 45; // Máximo 45 grados de rotación
+            targetY = (e.clientY / window.innerHeight - 0.5) * -45;
+            crearParticulaEstela(e.clientX, e.clientY);
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            targetX = (touch.clientX / window.innerWidth - 0.5) * 50;
+            targetY = (touch.clientY / window.innerHeight - 0.5) * -50;
+            crearParticulaEstela(touch.clientX, touch.clientY);
+        });
+
+        // Suavizado de la rotación (Efecto inercia física)
+        function actualizarRotacion() {
+            currentX += (targetX - currentX) * 0.08;
+            currentY += (targetY - currentY) * 0.08;
+            space3d.style.transform = `rotateY(${currentX}deg) rotateX(${currentY}deg)`;
+            requestAnimationFrame(actualizarRotacion);
+        }
+        actualizarRotacion();
+
+        // Arrancar música y ocultar pantalla
+        startBtn.addEventListener('click', () => {
+            welcomeOverlay.classList.add('hidden');
+            if (bgMusic) bgMusic.play().catch(e => console.log(e));
+        });
+
+        // Generar estrellas fijas en posiciones 3D (X, Y, Z)
+        for (let i = 0; i < 120; i++) {
+            const estrella = document.createElement('div');
+            estrella.className = 'star3d';
+            const size = Math.random() * 2.5 + 1;
+            estrella.style.width = `${size}px`;
+            estrella.style.height = `${size}px`;
+            
+            // Distribución tridimensional esférica/cúbica
+            const x = (Math.random() - 0.5) * window.innerWidth * 1.8;
+            const y = (Math.random() - 0.5) * window.innerHeight * 1.8;
+            const z = (Math.random() - 0.5) * 800 - 200;
+            
+            estrella.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+            starsGroup.appendChild(estrella);
+        }
+
+        // Generar flujo continuo de palabras en profundidad Z
+        function crearPalabra3D(texto) {
+            const el = document.createElement('div');
+            el.className = 'cosmic-text-3d';
+            el.innerText = texto;
+
+            el.style.setProperty('--glow-color', coloresGlow[Math.floor(Math.random() * coloresGlow.length)]);
+            el.style.fontSize = `${Math.random() * 8 + 18}px`;
+
+            // Ángulo aleatorio para que salgan del centro disparadas hacia adelante
+            const angulo = Math.random() * Math.PI * 2;
+            const rangoX = Math.cos(angulo) * (window.innerWidth * 0.7);
+            const rangoY = Math.sin(angulo) * (window.innerHeight * 0.7);
+
+            el.style.setProperty('--sx', `${Math.cos(angulo) * 20}px`);
+            el.style.setProperty('--sy', `${Math.sin(angulo) * 20}px`);
+            el.style.setProperty('--ex', `${rangoX}px`);
+            el.style.setProperty('--ey', `${rangoY}px`);
+
+            wordsGroup.appendChild(el);
+            setTimeout(() => { el.remove(); }, 12000);
+        }
+
+        let index = 0;
+        function buclePalabras() {
+            crearPalabra3D(palabrasAmor[index]);
+            index = (index + 1) % palabrasAmor.length;
+            setTimeout(buclePalabras, 600);
+        }
+
+        window.onload = () => {
+            buclePalabras();
+        };
+
+        function crearParticulaEstela(x, y) {
+            const p = document.createElement('div');
+            p.className = 'trail-particle';
+            p.innerText = "✨";
+            p.style.left = `${x}px`; p.style.top = `${y}px`;
+            p.style.setProperty('--mx', `${(Math.random() - 0.5) * 50}px`);
+            p.style.setProperty('--my', `${(Math.random() - 0.5) * 50}px`);
+            document.body.appendChild(p);
+            setTimeout(() => { p.remove(); }, 1000);
+        }
+
+        heartBtn.addEventListener('click', () => { letterModal.classList.add('active'); });
+        closeBtn.addEventListener('click', () => { letterModal.classList.remove('active'); });
+    </script>
+</body>
+</html>
