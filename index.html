@@ -31,12 +31,56 @@
             z-index: 1;
         }
 
+        /* DECORACIONES ESPACIALES FIJAS (PLANETAS Y EMOJIS DE AMOR) */
+        .space-decorations {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--c1), var(--c2));
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        /* Anillo decorativo para los planetas */
+        .planet::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 160%; height: 25%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+        }
+
+        .p-1 { width: 45px; height: 45px; top: 15%; left: 12%; --c1: #ff477e; --c2: #ea2aea; opacity: 0.5; }
+        .p-2 { width: 30px; height: 30px; bottom: 18%; left: 15%; --c1: #00f5d4; --c2: #03b5aa; opacity: 0.4; }
+        .p-3 { width: 55px; height: 55px; top: 22%; right: 10%; --c1: #ffb703; --c2: #ff477e; opacity: 0.45; }
+        .p-4 { width: 35px; height: 35px; bottom: 25%; right: 14%; --c1: #ea2aea; --c2: #00f5d4; opacity: 0.5; }
+
+        /* Emojis flotantes estáticos de fondo */
+        .bg-emoji {
+            position: absolute;
+            font-size: 22px;
+            opacity: 0.3;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+        .e-1 { top: 40%; left: 8%; }
+        .e-2 { top: 10%; right: 35%; }
+        .e-3 { bottom: 35%; right: 8%; }
+        .e-4 { bottom: 10%; left: 40%; }
+        .e-5 { top: 25%; left: 45%; }
+
         /* LIENZO PARA LAS LÍNEAS DE CONSTELACIONES */
         #constellationCanvas {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 2;
+            z-index: 3;
             pointer-events: none;
         }
 
@@ -136,7 +180,7 @@
             50% { transform: scale(1.06); filter: drop-shadow(0 0 35px rgba(255, 71, 126, 1)); }
         }
 
-        /* TEXTOS FLOTANTES CON DISEÑO DE DESPLAZAMIENTO SUAVE */
+        /* TEXTOS QUE APARECEN EN SU SITIO DE FORMA SUAVE */
         .floating-word {
             position: absolute;
             color: rgba(255, 255, 255, 0.95);
@@ -147,20 +191,15 @@
             pointer-events: none;
             white-space: nowrap;
             z-index: 4;
-            animation: float2D var(--duration) cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+            opacity: 0;
+            animation: fadeInOut var(--duration) ease-in-out forwards;
         }
 
-        @keyframes float2D {
-            0% {
-                transform: translate(var(--startX), var(--startY)) scale(0.5);
-                opacity: 0;
-            }
-            12% { opacity: 1; }
-            85% { opacity: 1; }
-            100% {
-                transform: translate(var(--endX), var(--endY)) scale(1.15);
-                opacity: 0;
-            }
+        @keyframes fadeInOut {
+            0% { transform: scale(0.9); opacity: 0; }
+            15% { transform: scale(1); opacity: 1; }
+            85% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.02); opacity: 0; }
         }
 
         /* ESTELA MÁGICA DE ESTRELLITAS */
@@ -177,7 +216,7 @@
             100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(0.2); opacity: 0; }
         }
 
-        /* PANTALLA DE INICIO CON INSTRUCCIONES CLARAS */
+        /* PANTALLA DE INICIO */
         .welcome-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -195,7 +234,7 @@
         .welcome-title {
             font-size: 24px;
             font-weight: 400;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             letter-spacing: 1.5px;
             color: #ffffff;
             text-align: center;
@@ -267,11 +306,25 @@
 <body>
 
     <div class="universe-background"></div>
+    
+    <div class="space-decorations">
+        <div class="planet p-1"></div>
+        <div class="planet p-2"></div>
+        <div class="planet p-3"></div>
+        <div class="planet p-4"></div>
+        
+        <span class="bg-emoji e-1">💕</span>
+        <span class="bg-emoji e-2">🪐</span>
+        <span class="bg-emoji e-3">💞</span>
+        <span class="bg-emoji e-4">🌙</span>
+        <span class="bg-emoji e-5">✨</span>
+    </div>
+
     <canvas id="constellationCanvas"></canvas>
 
     <div class="welcome-overlay" id="welcomeOverlay">
         <h1 class="welcome-title">Un espacio dedicado a ti ✨</h1>
-        <p class="welcome-subtitle">💖 Presiona el corazón central para leer tu mensaje secreto 💖</p>
+        <p class="welcome-subtitle">🧸Pulsa el corazon q este en el centro💕</p>
         <button class="start-btn" id="startBtn">❤️ Abrir Universo</button>
     </div>
 
@@ -388,7 +441,7 @@
         resizeCanvas();
         animateStars();
 
-        // Sistema de palabras flotantes (Ajustado para salir con mayor calma)
+        // Mensajes estáticos y pausados
         function crearPalabra2D(texto) {
             const word = document.createElement('div');
             word.className = 'floating-word';
@@ -397,30 +450,30 @@
             const glow = coloresGlow[Math.floor(Math.random() * coloresGlow.length)];
             word.style.setProperty('--glow-color', glow);
 
-            const startX = window.innerWidth / 2;
-            const startY = window.innerHeight / 2;
-
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.max(window.innerWidth, window.innerHeight) * 0.55;
+            let posX, posY;
+            const padding = 60;
             
-            const endX = startX + Math.cos(angle) * distance;
-            const endY = startY + Math.sin(angle) * distance;
+            do {
+                posX = Math.random() * (window.innerWidth - padding * 3) + padding;
+                posY = Math.random() * (window.innerHeight - padding * 3) + padding;
+            } while (
+                Math.abs(posX - window.innerWidth / 2) < 120 && 
+                Math.abs(posY - window.innerHeight / 2) < 120
+            );
 
-            word.style.setProperty('--startX', `${startX}px`);
-            word.style.setProperty('--startY', `${startY}px`);
-            word.style.setProperty('--endX', `${endX}px`);
-            word.style.setProperty('--endY', `${endY}px`);
-            word.style.setProperty('--duration', `${Math.random() * 4 + 7}s`); // Viaje más lento visualmente
+            word.style.left = `${posX}px`;
+            word.style.top = `${posY}px`;
+            word.style.setProperty('--duration', '6s');
 
             wordsContainer.appendChild(word);
-            setTimeout(() => { word.remove(); }, 11000);
+            setTimeout(() => { word.remove(); }, 6000);
         }
 
         let wordIndex = 0;
         function loopPalabras() {
             crearPalabra2D(palabrasAmor[wordIndex]);
             wordIndex = (wordIndex + 1) % palabrasAmor.length;
-            setTimeout(loopPalabras, 2500); // Lanzamiento muy pausado y relajante (2.5 segundos)
+            setTimeout(loopPalabras, 2800);
         }
 
         startBtn.addEventListener('click', () => {
