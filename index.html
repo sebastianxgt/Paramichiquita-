@@ -136,7 +136,7 @@
             50% { transform: scale(1.06); filter: drop-shadow(0 0 35px rgba(255, 71, 126, 1)); }
         }
 
-        /* TEXTOS FLOTANTES CON DISEÑO */
+        /* TEXTOS FLOTANTES CON DISEÑO DE DESPLAZAMIENTO SUAVE */
         .floating-word {
             position: absolute;
             color: rgba(255, 255, 255, 0.95);
@@ -177,7 +177,7 @@
             100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(0.2); opacity: 0; }
         }
 
-        /* PANTALLA DE INICIO */
+        /* PANTALLA DE INICIO CON INSTRUCCIONES CLARAS */
         .welcome-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -194,11 +194,20 @@
         .welcome-overlay.hidden { opacity: 0; pointer-events: none; }
         .welcome-title {
             font-size: 24px;
-            font-weight: 300;
-            margin-bottom: 30px;
-            letter-spacing: 2px;
-            color: #e2d5e5;
+            font-weight: 400;
+            margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            color: #ffffff;
             text-align: center;
+            padding: 0 20px;
+        }
+        .welcome-subtitle {
+            font-size: 15px;
+            font-weight: 300;
+            margin-bottom: 35px;
+            color: #ff85a2;
+            text-align: center;
+            letter-spacing: 0.5px;
             padding: 0 20px;
         }
         .start-btn {
@@ -262,6 +271,7 @@
 
     <div class="welcome-overlay" id="welcomeOverlay">
         <h1 class="welcome-title">Un espacio dedicado a ti ✨</h1>
+        <p class="welcome-subtitle">💖 Presiona el corazón central para leer tu mensaje secreto 💖</p>
         <button class="start-btn" id="startBtn">❤️ Abrir Universo</button>
     </div>
 
@@ -293,7 +303,6 @@
     </div>
 
     <script>
-        // TUS MENSAJES PERSONALIZADOS REEMPLAZADOS AQUÍ
         const palabrasAmor = [
             "✨ Siempre contigo", "❤️ Te amo", "☀️ Mi sol", "🌷 Mi chiquita", "🌹 Amor eterno", 
             "🌍 Mi mundo entero", "🥰 Mi vida", "💖 Brillas en mi corazon", "🎁 Mi sueño", "🔥 Siempre tú", 
@@ -379,7 +388,7 @@
         resizeCanvas();
         animateStars();
 
-        // Sistema de palabras flotantes
+        // Sistema de palabras flotantes (Ajustado para salir con mayor calma)
         function crearPalabra2D(texto) {
             const word = document.createElement('div');
             word.className = 'floating-word';
@@ -401,17 +410,17 @@
             word.style.setProperty('--startY', `${startY}px`);
             word.style.setProperty('--endX', `${endX}px`);
             word.style.setProperty('--endY', `${endY}px`);
-            word.style.setProperty('--duration', `${Math.random() * 3 + 6}s`);
+            word.style.setProperty('--duration', `${Math.random() * 4 + 7}s`); // Viaje más lento visualmente
 
             wordsContainer.appendChild(word);
-            setTimeout(() => { word.remove(); }, 9000);
+            setTimeout(() => { word.remove(); }, 11000);
         }
 
         let wordIndex = 0;
         function loopPalabras() {
             crearPalabra2D(palabrasAmor[wordIndex]);
             wordIndex = (wordIndex + 1) % palabrasAmor.length;
-            setTimeout(loopPalabras, 850);
+            setTimeout(loopPalabras, 2500); // Lanzamiento muy pausado y relajante (2.5 segundos)
         }
 
         startBtn.addEventListener('click', () => {
