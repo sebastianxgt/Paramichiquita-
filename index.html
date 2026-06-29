@@ -31,7 +31,7 @@
             z-index: 1;
         }
 
-        /* DECORACIONES ESPACIALES FIJAS (PLANETAS Y EMOJIS DE AMOR) */
+        /* DECORACIONES ESPACIALES FIJAS */
         .space-decorations {
             position: absolute;
             width: 100%;
@@ -46,7 +46,6 @@
             background: linear-gradient(135deg, var(--c1), var(--c2));
             box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
-        /* Anillo decorativo para los planetas */
         .planet::after {
             content: '';
             position: absolute;
@@ -62,7 +61,6 @@
         .p-3 { width: 55px; height: 55px; top: 22%; right: 10%; --c1: #ffb703; --c2: #ff477e; opacity: 0.45; }
         .p-4 { width: 35px; height: 35px; bottom: 25%; right: 14%; --c1: #ea2aea; --c2: #00f5d4; opacity: 0.5; }
 
-        /* Emojis flotantes estáticos de fondo */
         .bg-emoji {
             position: absolute;
             font-size: 22px;
@@ -75,7 +73,7 @@
         .e-4 { bottom: 10%; left: 40%; }
         .e-5 { top: 25%; left: 45%; }
 
-        /* LIENZO PARA LAS LÍNEAS DE CONSTELACIONES */
+        /* LIENZO DE CONSTELACIONES */
         #constellationCanvas {
             position: absolute;
             top: 0; left: 0;
@@ -94,7 +92,6 @@
             z-index: 5;
         }
 
-        /* DECORACIONES DE DETRÁS DEL CORAZÓN (ÓRBITAS MÁGICAS) */
         .cosmic-decorations {
             position: absolute;
             width: 400px;
@@ -113,35 +110,14 @@
             box-shadow: 0 0 15px rgba(234, 42, 234, 0.05);
         }
 
-        .ring-1 {
-            width: 260px; height: 130px;
-            transform: rotate(35deg);
-            animation: spinOrbit 25s linear infinite;
-        }
+        .ring-1 { width: 260px; height: 130px; transform: rotate(35deg); animation: spinOrbit 25s linear infinite; }
+        .ring-2 { width: 320px; height: 160px; border-color: rgba(0, 245, 212, 0.2); transform: rotate(-45deg); animation: spinOrbitReverse 35s linear infinite; }
+        .ring-3 { width: 200px; height: 200px; border: 1px double rgba(255, 255, 255, 0.1); animation: spinOrbit 45s linear infinite; }
 
-        .ring-2 {
-            width: 320px; height: 160px;
-            border-color: rgba(0, 245, 212, 0.2);
-            transform: rotate(-45deg);
-            animation: spinOrbitReverse 35s linear infinite;
-        }
+        @keyframes spinOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spinOrbitReverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
 
-        .ring-3 {
-            width: 200px; height: 200px;
-            border: 1px double rgba(255, 255, 255, 0.1);
-            animation: spinOrbit 45s linear infinite;
-        }
-
-        @keyframes spinOrbit {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes spinOrbitReverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* CORAZÓN CENTRAL PREMIUM Y SU AURA */
+        /* CORAZÓN CENTRAL INTERACTIVO */
         .heart-wrapper {
             position: relative;
             cursor: pointer;
@@ -167,20 +143,12 @@
             -webkit-user-select: none;
             transition: transform 0.2s;
         }
-        .heart-wrapper:hover .center-heart {
-            transform: scale(1.12);
-        }
+        .heart-wrapper:hover .center-heart { transform: scale(1.12); }
 
-        @keyframes auraExpand {
-            0% { transform: scale(0.5); opacity: 1; }
-            100% { transform: scale(1.8); opacity: 0; }
-        }
-        @keyframes elegantPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); filter: drop-shadow(0 0 35px rgba(255, 71, 126, 1)); }
-        }
+        @keyframes auraExpand { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
+        @keyframes elegantPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); filter: drop-shadow(0 0 35px rgba(255, 71, 126, 1)); } }
 
-        /* TEXTOS QUE APARECEN EN SU SITIO DE FORMA SUAVE */
+        /* TEXTOS FLOTANTES DISPARADOS DESDE EL CENTRO EN DIRECCIÓN ALEATORIA A VELOCIDAD BAJA */
         .floating-word {
             position: absolute;
             color: rgba(255, 255, 255, 0.95);
@@ -191,15 +159,24 @@
             pointer-events: none;
             white-space: nowrap;
             z-index: 4;
-            opacity: 0;
-            animation: fadeInOut var(--duration) ease-in-out forwards;
+            animation: floatOutwards var(--duration) linear forwards;
         }
 
-        @keyframes fadeInOut {
-            0% { transform: scale(0.9); opacity: 0; }
-            15% { transform: scale(1); opacity: 1; }
-            85% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.02); opacity: 0; }
+        @keyframes floatOutwards {
+            0% {
+                transform: translate(var(--startX), var(--startY)) scale(0.6);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--endX), var(--endY)) scale(1.1);
+                opacity: 0;
+            }
         }
 
         /* ESTELA MÁGICA DE ESTRELLITAS */
@@ -231,24 +208,8 @@
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), pointer-events 0.8s;
         }
         .welcome-overlay.hidden { opacity: 0; pointer-events: none; }
-        .welcome-title {
-            font-size: 24px;
-            font-weight: 400;
-            margin-bottom: 12px;
-            letter-spacing: 1.5px;
-            color: #ffffff;
-            text-align: center;
-            padding: 0 20px;
-        }
-        .welcome-subtitle {
-            font-size: 15px;
-            font-weight: 300;
-            margin-bottom: 35px;
-            color: #ff85a2;
-            text-align: center;
-            letter-spacing: 0.5px;
-            padding: 0 20px;
-        }
+        .welcome-title { font-size: 24px; font-weight: 400; margin-bottom: 12px; letter-spacing: 1.5px; text-align: center; padding: 0 20px; }
+        .welcome-subtitle { font-size: 15px; font-weight: 300; margin-bottom: 35px; color: #ff85a2; text-align: center; letter-spacing: 0.5px; padding: 0 20px; }
         .start-btn {
             background: linear-gradient(135deg, #ff477e, #ea2aea);
             border: none; padding: 16px 35px; color: white;
@@ -412,9 +373,7 @@
         function initStars() {
             stars = [];
             const count = Math.floor((canvas.width * canvas.height) / 12000);
-            for (let i = 0; i < count; i++) {
-                stars.push(new Star());
-            }
+            for (let i = 0; i < count; i++) { stars.push(new Star()); }
         }
 
         function animateStars() {
@@ -441,7 +400,7 @@
         resizeCanvas();
         animateStars();
 
-        // Mensajes estáticos y pausados
+        // Lanzamiento de mensajes: SALEN DISPARADOS DESDE EL CENTRO A VELOCIDAD LENTA
         function crearPalabra2D(texto) {
             const word = document.createElement('div');
             word.className = 'floating-word';
@@ -450,30 +409,41 @@
             const glow = coloresGlow[Math.floor(Math.random() * coloresGlow.length)];
             word.style.setProperty('--glow-color', glow);
 
-            let posX, posY;
-            const padding = 60;
-            
-            do {
-                posX = Math.random() * (window.innerWidth - padding * 3) + padding;
-                posY = Math.random() * (window.innerHeight - padding * 3) + padding;
-            } while (
-                Math.abs(posX - window.innerWidth / 2) < 120 && 
-                Math.abs(posY - window.innerHeight / 2) < 120
-            );
+            // Centrar el punto inicial exactamente en la pantalla
+            const startX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
 
-            word.style.left = `${posX}px`;
-            word.style.top = `${posY}px`;
-            word.style.setProperty('--duration', '6s');
+            // Dirección aleatoria
+            const angle = Math.random() * Math.PI * 2;
+            // Distancia de viaje total hasta salir de la pantalla
+            const distance = Math.max(window.innerWidth, window.innerHeight) * 0.6;
+            
+            const endX = Math.cos(angle) * distance;
+            const endY = Math.sin(angle) * distance;
+
+            // Desplazamiento desde el centro usando variables de CSS
+            word.style.setProperty('--startX', `-50%, -50%`);
+            word.style.setProperty('--startY', `0px`); // no se usa directamente al usar Translate relativo
+            word.style.setProperty('--endX', `calc(-50% + ${endX}px)`);
+            word.style.setProperty('--endY', `calc(-50% + ${endY}px)`);
+
+            // Centrado inicial absoluto en CSS antes del translate de la animación
+            word.style.left = `${startX}px`;
+            word.style.top = `${startY}px`;
+
+            // VELOCIDAD BAJA: El viaje toma de 9 a 12 segundos (Súper legible)
+            const duracion = Math.random() * 3 + 9;
+            word.style.setProperty('--duration', `${duracion}s`);
 
             wordsContainer.appendChild(word);
-            setTimeout(() => { word.remove(); }, 6000);
+            setTimeout(() => { word.remove(); }, duracion * 1000);
         }
 
         let wordIndex = 0;
         function loopPalabras() {
             crearPalabra2D(palabrasAmor[wordIndex]);
             wordIndex = (wordIndex + 1) % palabrasAmor.length;
-            setTimeout(loopPalabras, 2800);
+            setTimeout(loopPalabras, 2400); // Espacio de 2.4 segundos entre cada nueva frase lanzada
         }
 
         startBtn.addEventListener('click', () => {
@@ -482,7 +452,7 @@
             loopPalabras();
         });
 
-        // Estela mágica
+        // Estela mágica al mover el dedo o mouse
         function triggerSparkle(x, y) {
             const sparkle = document.createElement('div');
             sparkle.className = 'magic-sparkle';
