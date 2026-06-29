@@ -173,7 +173,6 @@
             text-shadow: 0 0 15px var(--glow-color);
             pointer-events: none;
             white-space: nowrap;
-            /* La animación calcula el trayecto simétrico desde el centro (0,0) */
             animation: floatOutwards var(--duration) linear forwards;
         }
 
@@ -338,8 +337,8 @@
             "🌍 Mi mundo entero", "🥰 Mi vida", "💖 Brillas en mi corazon", "🎁 Mi sueño", "🔥 Siempre tú", 
             "🌈 Mi niña", "🌌 Eres mi realidad", "☁️ Mi cielo", "🌙 Mi sueño", "💎 Eres todo", 
             "⭐ Estrella de mi vida ", "🦋 Mujer de mi vida", "💫 Mi destino", "🧸 Mi paz", "🔒 Mi lugar seguro",
-            "💕 Mi felicidad", "💞 Mi luna en esta noche", "💘 Mi cielo", "❤️ La niña de mis ojos""💕 Mi felicidad", 
-             "🫶 Mi Yoko", "🐱 Eres mi mejor casualidad", "🫂 Eres mi mas linda casualidad", "👸 La niña de mis ojos👑","🌍 Dueña de mi mundo",
+            "💕 Mi felicidad", "💞 Mi luna en esta noche", "💘 Mi cielo", "❤️ La niña de mis ojos", "💕 Mi felicidad", 
+            "🫶 Mi Yoko", "🐱 Eres mi mejor casualidad", "🫂 Eres mi mas linda casualidad", "👸 La niña de mis ojos👑","🌍 Dueña de mi mundo",
             "🔮 Tu felicidad es la mia", "🧜‍♀️ Mi sirena encantada ", "🗝️ La lleve de mi corazon", "🧸 Mi niña hermosa", "🌹 Amor inmenso"
         ];
         const coloresGlow = ['#ff477e', '#ff85a2', '#ea2aea', '#00f5d4', '#ffb703'];
@@ -449,18 +448,26 @@
         let wordIndex = 0;
         function loopPalabras() {
             // Estallido simultáneo de 2 frases
-            crearPalabra2D(palabrasAmor[wordIndex]);
-            wordIndex = (wordIndex + 1) % palabrasAmor.length;
-            
-            crearPalabra2D(palabrasAmor[wordIndex]);
-            wordIndex = (wordIndex % palabrasAmor.length === 0) ? 0 : (wordIndex + 1) % palabrasAmor.length;
+            if (palabrasAmor.length > 0) {
+                crearPalabra2D(palabrasAmor[wordIndex]);
+                wordIndex = (wordIndex + 1) % palabrasAmor.length;
+                
+                crearPalabra2D(palabrasAmor[wordIndex]);
+                wordIndex = (wordIndex + 1) % palabrasAmor.length;
+            }
 
             setTimeout(loopPalabras, 1500); 
         }
 
         startBtn.addEventListener('click', () => {
+            // Forzar ocultar la pantalla primero
             welcomeOverlay.classList.add('hidden');
-            if (bgMusic) bgMusic.play().catch(e => console.log(e));
+            
+            // Intento seguro de reproducción de audio
+            if (bgMusic) {
+                bgMusic.play().catch(e => console.log("Audio bloqueado o ausente, continuando sin problemas:", e));
+            }
+            
             loopPalabras();
         });
 
