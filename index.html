@@ -207,12 +207,12 @@
             100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(0.2); opacity: 0; }
         }
 
-        /* PANTALLA DE INICIO */
+        /* PANTALLA DE INICIO - REDISEÑO PREMIUM INTEGRADO */
         .welcome-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #05010a;
+            background: radial-gradient(circle at center, #0c051e 0%, #030008 100%);
             z-index: 100;
             display: flex;
             flex-direction: column;
@@ -222,17 +222,53 @@
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), pointer-events 0.8s;
         }
         .welcome-overlay.hidden { opacity: 0; pointer-events: none; }
-        .welcome-title { font-size: 24px; font-weight: 400; margin-bottom: 12px; letter-spacing: 1.5px; text-align: center; padding: 0 20px; }
-        .welcome-subtitle { font-size: 15px; font-weight: 300; margin-bottom: 35px; color: #ff85a2; text-align: center; letter-spacing: 0.5px; padding: 0 20px; }
+        
+        .welcome-title { 
+            font-size: 28px; 
+            font-weight: 500; 
+            margin-bottom: 16px; 
+            letter-spacing: 2px; 
+            text-align: center; 
+            padding: 0 20px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .welcome-subtitle { 
+            font-size: 15px; 
+            font-weight: 300; 
+            margin-bottom: 45px; 
+            color: #ff85a2; 
+            text-align: center; 
+            letter-spacing: 0.8px; 
+            padding: 0 20px;
+            opacity: 0.9;
+        }
+        
         .start-btn {
             background: linear-gradient(135deg, #ff477e, #ea2aea);
-            border: none; padding: 16px 35px; color: white;
-            font-weight: 600; font-size: 15px; letter-spacing: 1px;
-            border-radius: 50px; cursor: pointer;
-            box-shadow: 0 0 30px rgba(234, 42, 234, 0.45);
-            transition: all 0.3s;
+            border: none; 
+            padding: 18px 45px; 
+            color: white;
+            font-weight: 600; 
+            font-size: 16px; 
+            letter-spacing: 1.5px;
+            border-radius: 50px; 
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(234, 42, 234, 0.3), 
+                        0 0 40px rgba(255, 71, 126, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(234, 42, 234, 0.65); }
+        
+        .start-btn:hover { 
+            transform: scale(1.06) translateY(-3px); 
+            box-shadow: 0 15px 40px rgba(234, 42, 234, 0.5), 
+                        0 0 50px rgba(255, 71, 126, 0.4); 
+        }
+        
+        .start-btn:active {
+            transform: scale(0.98) translateY(0);
+        }
 
         /* DISEÑO DE TARJETA CRISTAL PREMIUM */
         .letter-overlay {
